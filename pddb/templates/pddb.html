@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta content="text" charset="utf-8" />
+        <title>Pddb Server</title>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" />
+
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+
+        <script type="text/javascript" src="/pddb/pddb.js"></script>
+
+        <style>
+            div.row {
+                padding: 25px;
+            }
+        </style>
+
+    </head>
+<body>
+    <div class="row">
+
+        <div class="col-md-12" id="pddb-explorer-wrapper">
+            <h3>
+                <span id="pddb-explorer-home" class="glyphicon glyphicon-home" style="margin-right: 10px; cursor: pointer"> </span>
+                <span id="pddb-explorer-title"></span>
+            </h3>
+            <div id="pddb-explorer-element" style="width: 100%; height: 100%">
+                <script id="pddb-explorer-script" type="text/javascript">
+                    (function(parentDiv) {
+                        var dbload = function (callback) {
+                            return function dbload_inner() {
+                                PandasDatabase.loadDb(parentDiv, $(parentDiv.parent()).find('#pddb-explorer-title'), callback);
+                            };
+                        };
+
+                        $('#pddb-explorer-home').click(dbload());
+                        dbload()();
+                    })($('#pddb-explorer-script').parent())
+                </script>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

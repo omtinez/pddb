@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{31a36b54-a687-410c-a994-4573556b2b0c}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>setup.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>
+    </InterpreterId>
+    <InterpreterVersion>
+    </InterpreterVersion>
+    <Name>PandasDatabase</Name>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include=".editorconfig" />
+    <Content Include=".gitignore" />
+    <Content Include=".travis.yml" />
+    <Content Include="AUTHORS.rst" />
+    <Content Include="CONTRIBUTING.rst" />
+    <Content Include="docs\authors.rst" />
+    <Content Include="docs\contributing.rst" />
+    <Content Include="docs\history.rst" />
+    <Content Include="docs\index.rst" />
+    <Content Include="docs\installation.rst" />
+    <Content Include="docs\make.bat" />
+    <Content Include="docs\Makefile" />
+    <Content Include="docs\readme.rst" />
+    <Content Include="docs\usage.rst" />
+    <Content Include="HISTORY.rst" />
+    <Content Include="LICENSE" />
+    <Content Include="Makefile" />
+    <Content Include="MANIFEST.in" />
+    <Content Include="pddb\js\pddb.js" />
+    <Content Include="pddb\templates\pddb.html" />
+    <Content Include="pddb\templates\pddb_table.tpl" />
+    <Content Include="pylintrc" />
+    <Content Include="README.rst" />
+    <Content Include="requirements_dev.txt" />
+    <Content Include="setup.cfg" />
+    <Content Include="tox.ini" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="docs\conf.py" />
+    <Compile Include="pddb\pddb.py" />
+    <Compile Include="pddb\__init__.py" />
+    <Compile Include="setup.py" />
+    <Compile Include="tests\test_pddb.py" />
+    <Compile Include="tests\test_pddbserver.py" />
+    <Compile Include="tests\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="docs" />
+    <Folder Include="pddb\" />
+    <Folder Include="pddb\js\" />
+    <Folder Include="pddb\templates\" />
+    <Folder Include="tests" />
+  </ItemGroup>
+  <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
+</Project>
