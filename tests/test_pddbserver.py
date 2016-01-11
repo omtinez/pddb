@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-test_pddb
+test_pddbserver
 ----------------------------------
 
 Tests for all the bottle server-related methods from the `pddb` module.
@@ -19,7 +19,7 @@ class TestPandasDatabaseServerMethods(unittest2.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.pddb = PandasDatabase('test', debug=True)
+        cls.pddb = PandasDatabase('TestPandasDatabaseServerMethods', debug=True)
         cls.pddb_app = cls.pddb.bind_bottle_routes(default_permissions='w')
         cls.record = {'A': '1', 'B': '2', 'C': '3'}
 
@@ -28,7 +28,7 @@ class TestPandasDatabaseServerMethods(unittest2.TestCase):
         cls.pddb.drop_all()
 
     def test_pddb_start(self):
-        tname = self.id()
+        tname = self.id().lower()
 
         # Find on empty table should return empty list
         res = self.pddb._action_callbacks['find'](tname)
@@ -36,7 +36,7 @@ class TestPandasDatabaseServerMethods(unittest2.TestCase):
         self.assertEqual(res.body, '[]')
 
     def test_pddb_insert(self):
-        tname = self.id()
+        tname = self.id().lower()
 
         # Insert new record using insert
         res = self.pddb._action_callbacks['insert'](tname, request_fallback=self.record)
@@ -58,7 +58,7 @@ class TestPandasDatabaseServerMethods(unittest2.TestCase):
         self.pddb.drop(tname)
 
     def test_pddb_upsert(self):
-        tname = self.id()
+        tname = self.id().lower()
 
         # Insert new record using upsert
         res = self.pddb._action_callbacks['upsert'](tname, request_fallback=self.record)

@@ -34,8 +34,8 @@ Matching conditions can also be added::
 
 Performing an update is a little more complicated. Rather than exposing multiple API's, a single
 API is used and the parameters are parsed to understand the user's desired operation. So, instead
-of using ``/pddb/upsert/column_name=column_value``, the user must use
-``/pddb/upsert/record__column_name=column_value&where__condition_name=condition_value``. Essentially,
+of using ``/pddb/upsert/table_name?column_name=column_value``, the user must use
+``/pddb/upsert/table_name?record__column_name=column_value&where__condition_name=condition_value``. Essentially,
 prepend ``record__`` or ``where__`` to let the database engine know which pair of key-value corresponds
 to what parameter. For example, to change the name ``John`` to ``Jane`` in our record, we can simply
 visit::

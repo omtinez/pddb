@@ -43,8 +43,8 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
             cls.pddb.drop_all()
 
     def test_create_database(self):
-        test_name = self.id()
-        self.pddb = PandasDatabase(self.id(), dynamic_schema=False, auto_load=False,
+        test_name = self.id().lower()
+        self.pddb = PandasDatabase(test_name, dynamic_schema=False, auto_load=False,
                                    auto_save=False, persistent=True, debug=False)
         self.assertTrue(os.path.exists(test_name.lower()))
         rmtree(test_name.lower())
@@ -53,7 +53,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_find_one(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=True,
                                    auto_save=False, persistent=False, debug=True)
 
@@ -73,7 +73,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_find_one_none(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=True,
                                    auto_save=False, persistent=False, debug=True)
 
@@ -85,7 +85,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_create_table_with_fixed_schema(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         schema = {self.tname: self.cols}
         self.pddb = PandasDatabase(test_name, dynamic_schema=False, astype=list, auto_load=False,
                                    auto_save=False, persistent=False, debug=False)
@@ -100,7 +100,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_single_insert_with_fixed_schema(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         schema = {self.tname: self.cols}
         self.pddb = PandasDatabase(test_name, dynamic_schema=False, astype='dict', auto_load=False,
                                    auto_save=False, persistent=False, debug=False)
@@ -117,7 +117,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_many_insert_with_fixed_schema(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         schema = {self.tname: self.cols}
         self.pddb = PandasDatabase(test_name, dynamic_schema=False, auto_load=False,
                                    auto_save=False, persistent=False, debug=False)
@@ -138,7 +138,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_single_upsert_with_fixed_schema(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         schema = {self.tname: self.cols}
         self.pddb = PandasDatabase(test_name, dynamic_schema=False, astype='dict', auto_load=False,
                                    auto_save=False, persistent=False, debug=False)
@@ -164,7 +164,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_many_upsert_with_fixed_schema(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         schema = {self.tname: self.cols}
         self.pddb = PandasDatabase(test_name, dynamic_schema=False, auto_load=False,
                                    auto_save=False, persistent=False, debug=False)
@@ -188,7 +188,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_create_table_with_dynamic_schema(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=True,
                                    auto_save=False, persistent=False, debug=False)
 
@@ -205,7 +205,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_astype(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=True,
                                    auto_save=False, persistent=False, debug=False)
 
@@ -225,7 +225,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_illegal_column_name(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, astype=list, auto_load=True,
                                    auto_save=False, persistent=False, debug=False)
 
@@ -238,7 +238,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_find_regex(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=True,
                                    auto_save=False, persistent=False, debug=False)
 
@@ -252,7 +252,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_upsert_to_insert_with_where(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=True,
                                    auto_save=False, persistent=False, debug=True)
 
@@ -265,7 +265,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_upsert_to_insert_with_conflict(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=True,
                                    auto_save=False, persistent=False, debug=True)
 
@@ -281,7 +281,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_create_table_with_upper_case(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         tname = self.tname.upper()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=False,
                                    auto_save=False, persistent=False, debug=False)
@@ -298,7 +298,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_find_using_columns(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=False,
                                    auto_save=False, persistent=False, debug=False)
         self.pddb.load(table_names=self.tname)
@@ -320,7 +320,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_find_where_in(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=True,
                                    auto_save=False, persistent=False, debug=False)
 
@@ -339,7 +339,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_single_delete_record(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=False,
                                    auto_save=False, persistent=False, debug=False)
         self.pddb.load(table_names=self.tname)
@@ -361,7 +361,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_single_rowgen(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=False,
                                    auto_save=False, persistent=False, debug=False)
 
@@ -376,7 +376,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb.drop_all()
 
     def test_fixed_schema_fail_column(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         schema = {self.tname: self.cols}
         self.pddb = PandasDatabase(test_name, dynamic_schema=False, auto_load=False,
                                    auto_save=False, persistent=False, debug=False)
@@ -390,7 +390,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_drop_table(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=True,
                                    auto_save=False, persistent=False, debug=False)
 
@@ -418,7 +418,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb = None
 
     def test_save_then_drop_all(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         schema = {self.tname: self.cols}
         self.pddb = PandasDatabase(test_name, dynamic_schema=False, auto_load=False,
                                    auto_save=False, persistent=True, debug=False)
@@ -429,19 +429,19 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         header_expected = ','.join(self.cols) + ',%s\n' % PandasDatabase._id_colname
         record_expected_regex = header_expected + \
             ','.join(['%s_%d' % (c, i) for (i, c) in enumerate(self.cols)]) + ',.+?\n'
-        with open(os.path.join(test_name, self.tname + '.csv'), 'r') as f:
+        with open(os.path.join(self.pddb.root_dir, test_name, self.tname + '.csv'), 'r') as f:
             record_csv = f.read()
 
-        self.assertTrue(os.path.exists(test_name.lower()))
+        self.assertTrue(os.path.exists(test_name))
         self.pddb.drop_all()
         self.assertRegex(record_csv, record_expected_regex)
-        self.assertFalse(os.path.exists(test_name.lower()))
+        self.assertFalse(os.path.exists(test_name))
 
         self.pddb.drop_all()
         self.pddb = None
 
     def test_defer_save_queue_max(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, astype='dict', auto_load=False,
                                    auto_save=True, deferred_save=True, persistent=True,
                                    debug=False)
@@ -459,7 +459,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb.drop_all()
 
     def test_defer_save_wait(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, astype='dict', auto_load=False,
                                    auto_save=True, deferred_save=True, persistent=True,
                                    debug=False)
@@ -477,7 +477,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
 
     '''
     def test_join(self):
-        test_name = self.id()
+        test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=True,
                                    auto_save=False, persistent=False, debug=True)
 

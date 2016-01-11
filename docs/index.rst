@@ -11,7 +11,7 @@ Welcome to PandasDatabase's documentation!
 
    readme
    installation
-   usage <usage>
+   usage
    contributing
    authors
    history
