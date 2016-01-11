@@ -22,7 +22,7 @@ test_requirements = [
 
 setup(
     name='pddb',
-    version='0.1.0',
+    version='0.1.1',
     description="Prototyping database engine for Python",
     long_description=readme + '\n\n' + history,
     author="Oscar Martinez",
@@ -42,7 +42,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
