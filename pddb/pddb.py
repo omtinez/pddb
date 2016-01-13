@@ -257,11 +257,12 @@ class PandasDatabase(object):
             with self._lock:
                 del self._db[tname]
 
-                if self.persistent:
+                filepath = os.path.join(self.root_dir, self.name, tname + '.csv')
+                if self.persistent and os.path.exists(filepath):
                     try:
-                        os.remove(os.path.join(self.root_dir, self.name, tname + '.csv'))
+                        os.remove(filepath)
                         self._print('Drop %s: Success' % tname)
-                    except IOError:
+                    except (IOError, WindowsError):
                         self._print('Drop %s: Failed' % tname)
 
     def drop_all(self):
