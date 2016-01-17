@@ -261,7 +261,7 @@ class PandasDatabase(object):
                     try:
                         os.remove(os.path.join(self.root_dir, self.name, tname + '.csv'))
                         self._print('Drop %s: Success' % tname)
-                    except IOError:
+                    except (IOError, WindowsError):
                         self._print('Drop %s: Failed' % tname)
 
     def drop_all(self):
@@ -271,9 +271,9 @@ class PandasDatabase(object):
             with self._lock:
                 try:
                     dbfolder = os.path.join(self.root_dir, self.name)
-                    if os.path.exists(dbfolder):
+                    if os.path.exists(dbfolder) and not os.listdir(dbfolder):
                         rmtree(dbfolder)
-                except IOError:
+                except (IOError, WindowsError):
                     self._print('Failed to delete folder %s when dropping database' % self.name)
                 finally:
                     del self
