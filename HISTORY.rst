@@ -13,3 +13,15 @@ History
 * Fix case sensitive tests
 * Disable testing for all versions except 2.7, 3.3 and 3.4
 * Update docs
+
+0.2.0 (2016-01-12)
+------------------
+
+* Do not attempt to drop table if it does not exist
+* Improved Windows compatibility
+
+0.3.0 (2016-01-17)
+------------------
+
+* Delete database folder only if empty after dropping all tables
+* Improved Windows compatibility
