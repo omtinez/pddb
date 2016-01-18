@@ -9,7 +9,7 @@ PandasDatabase
         :target: https://travis-ci.org/omtinez/pddb
 
 .. image:: https://readthedocs.org/projects/pddb/badge/?version=latest
-        :target: https://readthedocs.org/projects/pddb/?badge=latest
+        :target: https://pddb.readthedocs.org/en/latest/?badge=latest
         :alt: Documentation Status
 
 
