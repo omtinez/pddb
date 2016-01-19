@@ -11,6 +11,16 @@ from time import time, sleep
 from shutil import rmtree
 from pandas import Series, DataFrame, read_csv, isnull
 
+# Python 2.x vs 3.x compatibility
+def tostr(s, cast=False, enc='utf8'):
+    if sys.version_info >= (3, 0, 0) and isinstance(s, bytes):
+        s = s.decode(enc)
+    elif sys.version_info < (3, 0, 0) and isinstance(s, unicode):
+        s = s.encode(enc)
+    elif not isinstance(s, str) and cast:
+        s = str(s)
+    return s
+
 class PandasDatabase(object):
 # pylint: disable=too-many-instance-attributes,attribute-defined-outside-init
     '''
@@ -45,6 +55,8 @@ class PandasDatabase(object):
         Attempt to load previously existing databases from the root directory upon start.
     auto_save: boolean (default `True`)
         Automatically save to disk after each operation that modifies records in the database.
+    auto_cast: boolean (default `False`)
+        Automatically cast not supported data types to string.
     dynamic_schema: boolean (default `True`)
         Automatically add or delete columns in all tables based on the schema assumed by 
         database operations. For example, inserting a record like `{"Name": "John"}` to a table
@@ -116,6 +128,7 @@ class PandasDatabase(object):
         self.root_dir = os.getcwd()
         self.auto_load = True
         self.auto_save = True
+        self.auto_cast = False
         self.dynamic_schema = True
         self.persistent = True
         self.deferred_save = False
@@ -609,7 +622,7 @@ class PandasDatabase(object):
             dtype: object
         '''
         tname = self._check_tname(tname)
-        record = PandasDatabase._check_dict_type(record)
+        record = PandasDatabase._check_dict_type(str, str, record, cast=self.auto_cast)
         columns = PandasDatabase._check_type_iter(str, columns)
         record[self._id_colname] = str(uuid.uuid4())
 
@@ -689,7 +702,7 @@ class PandasDatabase(object):
         where = PandasDatabase._check_conditions(where)
         where_not = PandasDatabase._check_conditions(where_not)
         columns = PandasDatabase._check_type_iter(str, columns)
-        record = PandasDatabase._check_dict_type(record)
+        record = PandasDatabase._check_dict_type(str, str, record, cast=self.auto_cast)
 
         # Attempt search only if where conditions are given
         if (where is not None and len(where) > 0) \
@@ -840,14 +853,22 @@ class PandasDatabase(object):
         return tname
 
     @staticmethod
-    def _check_type_iter(var_type, var_iter):
+    def _check_type_iter(var_type, var_iter, cast=False):
         if var_iter is None:
             var_iter = list()
-        elif isinstance(var_iter, var_type):
-            var_iter = [var_iter]
-        if not hasattr(var_iter, '__iter__') or not all([isinstance(it, str) for it in var_iter]):
+        elif not isinstance(var_iter, list) and not isinstance(var_iter, tuple):
+            var_iter = (var_iter,)
+
+        if not isinstance(var_type, list) and not isinstance(var_type, tuple):
+            var_type = (var_type,)
+
+        var_iter = [tostr(it, cast=cast) for it in var_iter]
+
+        if not all([type(it) in var_type for it in var_iter]):
             raise ValueError(
-                'Parameter must be of type "%s" or iterable of such type' % var_type.__name__)
+                'Parameter must be of type "%s" or iterable of such type. Instead found "%s".'
+                % ('" or "'.join([ty.__name__ for ty in var_type]),
+                    [type(it).__name__ for it in var_iter if not type(it) in var_type][0]))
         return var_iter
 
     def _check_columns(self, columns, add_id=False):
@@ -873,7 +894,7 @@ class PandasDatabase(object):
 
     @staticmethod
     def _check_conditions(conditions):
-        conditions = PandasDatabase._check_dict_type(conditions)
+        conditions = PandasDatabase._check_dict_type(str, (str, list, PandasDatabase._regex_type), conditions)
         for cond_key, cond_val in conditions.items():
             if not hasattr(cond_val, '__iter__') and \
                     (isnull(cond_val) or isinstance(cond_val, PandasDatabase._regex_type)):
@@ -883,12 +904,30 @@ class PandasDatabase(object):
         return conditions
 
     @staticmethod
-    def _check_dict_type(obj):
+    def _check_dict_type(key_type, val_type, obj, cast=False):
         if obj is None:
             obj = dict()
         if not isinstance(obj, dict):
             raise ValueError('Parameter must be None or of type dict: %s' % obj)
-        return dict(obj)
+
+        if not isinstance(key_type, list) and not isinstance(key_type, tuple):
+            key_type = (key_type,)
+        if not isinstance(val_type, list) and not isinstance(val_type, tuple):
+            val_type = (val_type,)
+
+        obj = {tostr(obj_k, cast=cast): tostr(obj_v, cast=cast) for obj_k, obj_v in obj.items()}
+
+        if not cast and not all([type(it) in key_type for it in obj.keys()]):
+            raise ValueError(
+                'Dictionary keys must be of type "%s". Instead found "%s".'
+                % ('" or "'.join([ty.__name__ for ty in key_type]),
+                    [type(it).__name__ for it in obj.keys() if not type(it) in key_type][0]))
+        if not cast and not all([type(it) in val_type for it in obj.values()]):
+            raise ValueError(
+                'Dictionary values must be of type "%s". Instead found "%s".'
+                % ('" or "'.join([ty.__name__ for ty in val_type]),
+                    [type(it).__name__ for it in obj.values() if not type(it) in val_type][0]))
+        return obj
 
     ###########################################################################
     #                     The web API section begins here                     #
@@ -951,7 +990,7 @@ class PandasDatabase(object):
 
         # Parameter guards
         allowed_permissions = (None, 'r', 'w')
-        table_permissions = self._check_dict_type(table_permissions)
+        table_permissions = self._check_dict_type(str, str, table_permissions)
         if default_permissions not in allowed_permissions:
             raise ValueError('Parameter "default_permission" must be one of %r' %
                              allowed_permissions)

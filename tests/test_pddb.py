@@ -193,7 +193,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
                                    auto_save=False, persistent=False, debug=False)
 
         for i, c in enumerate(self.cols):
-            record = {c:i}
+            record = {c: str(i)}
             self.pddb.insert(self.tname, record)
 
         PandasDatabase_cols = set(self.pddb._db[self.tname].columns)
@@ -224,6 +224,28 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
         self.pddb.drop_all()
         self.pddb = None
 
+    def test_bytes_conversion(self):
+        test_name = self.id().lower()
+        self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=True,
+                                   auto_save=False, persistent=False, debug=True)
+
+        record = self.pddb.insert(self.tname, record={b'col_name_1': b'1'}, astype='dict')
+        self.assertTrue(all([type(x) == str for x in list(record.keys()) + list(record.values())]))
+
+        self.pddb.drop_all()
+        self.pddb = None
+
+    def test_unicode_conversion(self):
+        test_name = self.id().lower()
+        self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=True,
+                                   auto_save=False, persistent=False, debug=True)
+
+        record = self.pddb.insert(self.tname, record={u'col_name_1': u'1'}, astype='dict')
+        self.assertTrue(all([type(x) == str for x in list(record.keys()) + list(record.values())]))
+
+        self.pddb.drop_all()
+        self.pddb = None
+
     def test_illegal_column_name(self):
         test_name = self.id().lower()
         self.pddb = PandasDatabase(test_name, dynamic_schema=True, astype=list, auto_load=True,
@@ -243,10 +265,26 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
                                    auto_save=False, persistent=False, debug=False)
 
         for i in range(10):
-            self.pddb.insert(self.tname, record={'col_name': i})
+            self.pddb.insert(self.tname, record={'col_name': str(i)})
 
         rows = self.pddb.find(self.tname, where={'col_name': re.compile(r'[1-5]')})
         self.assertEqual(len(rows), 5)
+
+        self.pddb.drop_all()
+        self.pddb = None
+
+    def test_type_cast(self):
+        test_name = self.id().lower()
+        self.pddb = PandasDatabase(test_name, dynamic_schema=True, auto_load=True,
+                                   auto_save=False, auto_cast=True, persistent=False, debug=False)
+
+        dict_mix = {1: 'a', 'col_name': 1, 'b': 0.5}
+        dict_str = {str(k): str(v) for k,v in dict_mix.items()}
+        record = self.pddb.insert(self.tname, record=dict_mix, astype='dict')
+        self.assertTrue(all([type(x) == str for x in list(record.keys()) + list(record.values())]))
+
+        record.pop(PandasDatabase._id_colname)
+        self.assertEqual(record, dict_str)
 
         self.pddb.drop_all()
         self.pddb = None
@@ -382,7 +420,7 @@ class TestPandasDatabaseMethods(unittest2.TestCase):
                                    auto_save=False, persistent=False, debug=False)
         self.pddb.load(table_schemas=schema)
 
-        insert_function = lambda: self.pddb.insert(self.tname, record={'D':0})
+        insert_function = lambda: self.pddb.insert(self.tname, record={'D': '0'})
         self.assertRaisesRegex(ValueError, 'Column "D" does not exist in schema for table "%s"' %
                                self.tname, insert_function)
 
