@@ -25,3 +25,10 @@ History
 
 * Delete database folder only if empty after dropping all tables
 * Improved Windows compatibility
+
+0.3.1 (2016-01-18)
+------------------
+
+* Added auto_cast option
+* String type enforcing enabled
+* Unicode and byte type support
