@@ -32,3 +32,8 @@ History
 * Added auto_cast option
 * String type enforcing enabled
 * Unicode and byte type support
+
+0.3.2 (2016-02-14)
+------------------
+
+* Added ability to use custom bottle route methods
