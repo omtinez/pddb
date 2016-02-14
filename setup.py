@@ -22,7 +22,7 @@ test_requirements = [
 
 setup(
     name='pddb',
-    version='0.3.1',
+    version='0.3.2',
     description="Prototyping database engine for Python",
     long_description=readme + '\n\n' + history,
     author="Oscar Martinez",
