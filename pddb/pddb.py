@@ -986,7 +986,7 @@ class PandasDatabase(object):
         # Return a dictionary with only the requested parameters
         return {k:v for k, v in nullifier(query).items() if k in param_list}
 
-    def bind_bottle_routes(self, bottle_app=None, default_permissions='r', table_permissions=None):
+    def bind_bottle_routes(self, bottle_app=None, bottle_router='route', default_permissions='r', table_permissions=None):
 
         # Parameter guards
         allowed_permissions = (None, 'r', 'w')
@@ -1035,8 +1035,8 @@ class PandasDatabase(object):
             self._action_callbacks = dict()
 
         # Initialize a bottle app if none is given
-        if bottle_app is None:
-            bottle_app = Bottle()
+        bottle_app = bottle_app or Bottle()
+        bottle_router = getattr(bottle_app, bottle_router)
 
         # Read permissions only allow access to "find", write permissions allow everything
         all_actions = ('find', 'insert', 'upsert', 'delete', 'drop')
@@ -1050,21 +1050,21 @@ class PandasDatabase(object):
         generic_actions = allowed_actions(default_permissions)
         for action in generic_actions:
             self._print('Binding action "%s" for all tables' % action)
-            bottle_app.route('/pddb/%s/<table>' % action, method=['GET', 'POST'],
+            bottle_router('/pddb/%s/<table>' % action, method=['GET', 'POST'],
                              callback=self._action_callbacks[action])
 
         # Specific actions for user provided table names
         for tname, perm in table_permissions.items():
             table_actions = allowed_actions(perm)
             for action in table_actions:
-                bottle_app.route('/pddb/%s/%s' % (action, tname), method=['GET', 'POST'],
+                bottle_router('/pddb/%s/%s' % (action, tname), method=['GET', 'POST'],
                                  callback=action_method_factory(tname, action))
 
         # Helper function for relative paths
         relpath = lambda x: os.path.join(self.root_dir, x)
 
         # Database explorer UI routes
-        @bottle_app.route('/pddb/html/<table>', method='GET')
+        @bottle_router('/pddb/html/<table>', method='GET')
         def table_html(table):
             data = self.find(table, astype='dict')
             schema = self.get_table_schema(table)
@@ -1078,7 +1078,7 @@ class PandasDatabase(object):
             html_out = template(template_path, dom_id='table_%s' % table, schema=schema, rows=rows)
             return html_out
 
-        @bottle_app.route('/pddb/html/tables', method='GET')
+        @bottle_router('/pddb/html/tables', method='GET')
         def schemas_html():
             schema = ['Table Name']
             rows = [['', tname] for tname in self.get_table_names()]
@@ -1087,11 +1087,11 @@ class PandasDatabase(object):
             html_out = template(template_path, dom_id='table_list', schema=schema, rows=rows)
             return html_out
 
-        @bottle_app.route('/pddb/pddb.js', method='GET')
+        @bottle_router('/pddb/pddb.js', method='GET')
         def db_js():
             return static_file(os.path.join('js', 'pddb.js'), root=os.path.dirname(__file__))
 
-        @bottle_app.route('/pddb', method='GET')
+        @bottle_router('/pddb', method='GET')
         def db_html():
             return static_file(
                 os.path.join('templates', 'pddb.html'), root=os.path.dirname(__file__))
