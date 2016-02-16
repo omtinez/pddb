@@ -307,17 +307,27 @@ class PandasDatabase(object):
 
         with self._lock:
             for dataframe_key, dataframe_val in self._db.items():
+                filepath = os.path.join(self.root_dir, self.name, dataframe_key + '.csv')
 
                 # Remove all NaN columns when dynamic_schema is enabled
                 if self.dynamic_schema:
                     pass # TODO
 
-                # Save dataframe to csv file
-                fullpath = os.path.join(self.root_dir, self.name, dataframe_key + '.csv')
-                dataframe_val.to_csv(fullpath, cols=self._schemas[dataframe_key], index=False)
+                # Save dataframe to csv file only if there is more than zero rows
+                if len(dataframe_val) > 0:
+                    dataframe_val.to_csv(filepath, cols=self._schemas[dataframe_key], index=False)
 
-                self._print('Saved %s: %s' % (fullpath, 'Success'
-                                              if os.path.exists(fullpath) else 'Fail'))
+                    self._print('Saved %s: %s' % (filepath, 'Success'
+                                                  if os.path.exists(filepath) else 'Fail'))
+
+                # If the dataframe is empty, delete csv file
+                elif os.path.exists(filepath):
+                    try:
+                        os.remove(filepath)
+                        self._print('Deleted %s: Success' % filepath)
+                    except (IOError, WindowsError):
+                        self._print('Deleted %s: Failed' % filepath)
+
 
             # Update last saved time
             self._save_last = time()
@@ -1074,7 +1084,7 @@ class PandasDatabase(object):
             rows = [[row[PandasDatabase._id_colname]] +
                     [row[col] for col in schema] for row in data]
             template_path = os.path.join(
-                os.path.dirname(__file__), 'templates', 'pddb_table')
+                os.path.dirname(__file__), 'templates', 'pddb_table.tpl')
             html_out = template(template_path, dom_id='table_%s' % table, schema=schema, rows=rows)
             return html_out
 
@@ -1083,7 +1093,7 @@ class PandasDatabase(object):
             schema = ['Table Name']
             rows = [['', tname] for tname in self.get_table_names()]
             template_path = os.path.join(
-                os.path.dirname(__file__), 'templates', 'pddb_table')
+                os.path.dirname(__file__), 'templates', 'pddb_table.tpl')
             html_out = template(template_path, dom_id='table_list', schema=schema, rows=rows)
             return html_out
 

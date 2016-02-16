@@ -1,5 +1,11 @@
 ﻿var PandasDatabase = PandasDatabase || {}
 
+function onerror(xhr, textStatus, errorThrown) {
+    if (console) {
+        console.log(xhr.responseText);
+    }
+}
+
 PandasDatabase.loadTable = function loadTable(tname, targetElem, targetTitle, columns, callback) {
     reqQuery = {"_": $.now()};
     if (columns && typeof (columns) == 'string') {
@@ -24,7 +30,7 @@ PandasDatabase.loadTable = function loadTable(tname, targetElem, targetTitle, co
             callback(table);
         }
 
-    });
+    }).fail(onerror);
 };
 
 PandasDatabase.loadDb = function loadDb(targetElem, targetTitle, callback) {
@@ -42,5 +48,5 @@ PandasDatabase.loadDb = function loadDb(targetElem, targetTitle, callback) {
         if (callback && typeof (callback) == 'function') {
             callback(table);
         }
-    });
+    }).fail(onerror);
 }
