@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .pddb import PandasDatabase
+from .pddb import PandasDatabase, tostr
 
 __author__ = 'Oscar Martinez'
 __email__ = 'omtinez@gmail.com'
