@@ -37,3 +37,9 @@ History
 ------------------
 
 * Added ability to use custom bottle route methods
+
+0.3.3 (2016-02-15)
+------------------
+
+* Delete CSV files if dataframe is empty when saving
+* Expose tostr() method as a public method
