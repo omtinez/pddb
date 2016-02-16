@@ -4,6 +4,6 @@ from .pddb import PandasDatabase, tostr
 
 __author__ = 'Oscar Martinez'
 __email__ = 'omtinez@gmail.com'
-__version__ = '0.3.2'
+__version__ = '0.3.3'
 
 __all__ = ['PandasDatabase', 'tostr']
